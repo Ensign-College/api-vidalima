@@ -4,15 +4,21 @@ const bodyParser = require('body-parser'); // Add this line to parse request bod
 
 const Redis = require('redis'); // import the Redis Class from Library 
 
+const cors = require ('cors');
+
+const options = {
+    origin: 'http://localhost:3000' //allow our frontend to call this backend
+}
 
 const redisClient = Redis.createClient({
     url: `redis://localhost:6379`
 });
 
 const app = express(); // create an express application (express is like a constructor)
-const port = 3000; // this is the port number
+const port = 3001; // this is the port number
 
 app.use(bodyParser.json()); // Use bodyParser to parse JSON requests
+app.use(cors(options)); // allow frontend to call backend
 
 app.listen(port, () => {
     redisClient.connect(); // this connects to the redis database!!!
@@ -53,7 +59,7 @@ app.get('/boxes', async (req, res) => { // async is a promise (race car conditio
     //Print boxes to the console
     console.log('Boxes:', boxes);
 
-    res.send(JSON.stringify(boxes)); // convert boxes to a string 
+    res.json(boxes[0]);//the boxes is an array of arrays,convert first element to a JSON string
 
 }); // return boxes to the user 
 
