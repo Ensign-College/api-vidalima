@@ -44,7 +44,7 @@ app.post("/orders", async (req, res) => {
   let order = req.body;
   // order details, include product quantity and shipping address
   let responseStatus =
-    order.productQuantity && order.ShippingAddress ? 200 : 400;
+    order.customerId && order.shippingAddress ? 200 : 400;
 
   if (responseStatus === 200) {
     try {
@@ -62,8 +62,8 @@ app.post("/orders", async (req, res) => {
     res.status(responseStatus);
     res.send(
       `Missing one of the following fields: ${
-        order.profuctQuantity ? "" : "productQuantity"
-      } ${order.ShippingAddress ? "" : "ShippingAddress"}`
+        order.customerId ? "" : "customerId"
+      } ${order.shippingAddress ? "" : "shippingAddress"}`
     );
   }
   
