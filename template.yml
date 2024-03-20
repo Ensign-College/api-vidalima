@@ -1,61 +1,79 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 
+Globals:
+  Function:
+    Runtime: nodejs20.x
+
 Resources:
-  MyLambdaFunction:
+  GetBoxesFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
-      Handler: index.handler
-      Runtime: nodejs20.x  # Updated runtime to nodejs20.x
+      Handler: index.getBoxes
       CodeUri: .
-      MemorySize: 128
-      Timeout: 30
-      Environment:
-        Variables:
-            REDIS_HOST: !GetAtt MyElasticacheRedis.RedisEndpoint.Address
       Events:
-        MyApi:
+        GetBoxesApi:
           Type: Api
           Properties:
-            Path: /myendpoint
+            Path: /boxes
             Method: get
 
-  MyVPC:
-    Type: AWS::EC2::VPC
+  PostBoxesFunction:
+    Type: 'AWS::Serverless::Function'
     Properties:
-      CidrBlock: 10.0.0.0/16
+      Handler: index.postBoxes
+      CodeUri: .
+      Events:
+        PostBoxesApi:
+          Type: Api
+          Properties:
+            Path: /boxes
+            Method: post
 
-  MySubnet:
-    Type: AWS::EC2::Subnet
+  PostOrdersFunction:
+    Type: 'AWS::Serverless::Function'
     Properties:
-      VpcId: !Ref MyVPC
-      CidrBlock: 10.0.0.0/24
+      Handler: index.postOrders
+      CodeUri: .
+      Events:
+        PostOrdersApi:
+          Type: Api
+          Properties:
+            Path: /orders
+            Method: post
 
-  MyElasticacheSubnetGroup:
-    Type: AWS::ElastiCache::SubnetGroup
+  GetOrdersFunction:
+    Type: 'AWS::Serverless::Function'
     Properties:
-      Description: Subnet group for ElastiCache
-      SubnetIds:
-        - !Ref MySubnet
+      Handler: index.getOrders
+      CodeUri: .
+      Events:
+        GetOrdersApi:
+          Type: Api
+          Properties:
+            Path: /orders/{orderId}
+            Method: get
 
-  MyElasticacheRedis:
-    Type: 'AWS::ElastiCache::CacheCluster'
+  PostOrderItemsFunction:
+    Type: 'AWS::Serverless::Function'
     Properties:
-      CacheNodeType: cache.t2.micro
-      Engine: redis
-      NumCacheNodes: 1
-      Port: 6379
-      VpcSecurityGroupIds:
-        - !GetAtt MySecurityGroup.GroupId
-      CacheSubnetGroupName: !Ref MyElasticacheSubnetGroup
+      Handler: index.postOrderItems
+      CodeUri: .
+      Events:
+        PostOrderItemsApi:
+          Type: Api
+          Properties:
+            Path: /orderItems
+            Method: post
 
-  MySecurityGroup:
-    Type: AWS::EC2::SecurityGroup
+  GetOrderItemsFunction:
+    Type: 'AWS::Serverless::Function'
     Properties:
-      GroupDescription: Security group for Lambda function
-      VpcId: !Ref MyVPC
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 6379
-          ToPort: 6379
-          CidrIp: 0.0.0.0/0
+      Handler: index.getOrderItems
+      CodeUri: .
+      Events:
+        GetOrderItemsApi:
+          Type: Api
+          Properties:
+            Path: /orderItems/{orderItemId}
+            Method: get
