@@ -77,3 +77,44 @@ Resources:
           Properties:
             Path: /orderItems/{orderItemId}
             Method: get
+
+# MyVPC:
+#     Type: AWS::EC2::VPC
+#     Properties:
+#       CidrBlock: 10.0.0.0/16
+
+#   MySubnet:
+#     Type: AWS::EC2::Subnet
+#     Properties:
+#       VpcId: !Ref MyVPC
+#       CidrBlock: 10.0.0.0/24
+
+  MyElasticacheSubnetGroup:
+    Type: AWS::ElastiCache::SubnetGroup
+    Properties:
+      Description: Subnet group for ElastiCache
+      SubnetIds:
+        - subnet-02c217f126c0ce1d5
+        
+  MyElasticacheRedis:
+    Type: 'AWS::ElastiCache::CacheCluster'
+    Properties:
+      CacheNodeType: cache.t2.micro
+      Engine: redis
+      NumCacheNodes: 1
+      Port: 6379
+      VpcSecurityGroupIds:
+        - !GetAtt MySecurityGroup.GroupId
+      CacheSubnetGroupName: !Ref MyElasticacheSubnetGroup
+
+  MySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for Lambda function
+      VpcId: vpc-066e6a637e37f2752
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 6379
+          ToPort: 6379
+          CidrIp: 0.0.0.0/0
+
