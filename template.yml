@@ -1,93 +1,90 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Transform: 'AWS::Serverless-2016-10-31'
-
-Globals:
-  Function:
-    Runtime: nodejs20.x
+Transform: AWS::Serverless-2016-10-31
 
 Resources:
-  GetBoxesFunction:
-    Type: 'AWS::Serverless::Function'
+  ApiFunction:
+    Type: AWS::Serverless::Function
     Properties:
-      Handler: index.getBoxes
       CodeUri: .
+      Handler: index.ordersHandler
+      Runtime: nodejs20.x
       Events:
-        GetBoxesApi:
-          Type: Api
-          Properties:
-            Path: /boxes
-            Method: get
-
-  PostBoxesFunction:
-    Type: 'AWS::Serverless::Function'
-    Properties:
-      Handler: index.postBoxes
-      CodeUri: .
-      Events:
-        PostBoxesApi:
-          Type: Api
-          Properties:
-            Path: /boxes
-            Method: post
-
-  PostOrdersFunction:
-    Type: 'AWS::Serverless::Function'
-    Properties:
-      Handler: index.postOrders
-      CodeUri: .
-      Events:
-        PostOrdersApi:
+        ApiEvent:
           Type: Api
           Properties:
             Path: /orders
             Method: post
 
-  GetOrdersFunction:
-    Type: 'AWS::Serverless::Function'
+  OrderItemsFunction:
+    Type: AWS::Serverless::Function
     Properties:
-      Handler: index.getOrders
       CodeUri: .
+      Handler: index.orderItemsHandler
+      Runtime: nodejs20.x
       Events:
-        GetOrdersApi:
-          Type: Api
-          Properties:
-            Path: /orders/{orderId}
-            Method: get
-
-  PostOrderItemsFunction:
-    Type: 'AWS::Serverless::Function'
-    Properties:
-      Handler: index.postOrderItems
-      CodeUri: .
-      Events:
-        PostOrderItemsApi:
+        OrderItemsApiEvent:
           Type: Api
           Properties:
             Path: /orderItems
             Method: post
 
-  GetOrderItemsFunction:
-    Type: 'AWS::Serverless::Function'
+  OrdersByIdFunction:
+    Type: AWS::Serverless::Function
     Properties:
-      Handler: index.getOrderItems
       CodeUri: .
+      Handler: index.ordersByIdHandler
+      Runtime: nodejs20.x
       Events:
-        GetOrderItemsApi:
+        OrdersByIdApiEvent:
           Type: Api
           Properties:
-            Path: /orderItems/{orderItemId}
+            Path: /orders/{orderId}
             Method: get
 
-# MyVPC:
-#     Type: AWS::EC2::VPC
-#     Properties:
-#       CidrBlock: 10.0.0.0/16
+  BoxesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: index.boxesHandler
+      Runtime: nodejs20.x
+      Events:
+        BoxesApiEvent:
+          Type: Api
+          Properties:
+            Path: /boxes
+            Method: get
 
-#   MySubnet:
-#     Type: AWS::EC2::Subnet
-#     Properties:
-#       VpcId: !Ref MyVPC
-#       CidrBlock: 10.0.0.0/24
+
+
+  # # Add IAM roles with required tag permissions
+  # OrderItemsFunctionRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     RoleName: MyOrderItemsFunctionRole    
+  #     AssumeRolePolicyDocument:
+  #       Version: '2012-10-17'
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service: lambda.amazonaws.com
+  #           Action: sts:AssumeRole
+  #     ManagedPolicyArns:
+  #       - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+  #     Tags:
+  #       - Key: MyTag
+  #         Value: MyValue
+
+
+  # MyVPC:
+  #   Type: AWS::EC2::VPC
+  #   Properties:
+  #     CidrBlock: 10.0.0.0/16
+
+  # MySubnet:
+  #   Type: AWS::EC2::Subnet
+  #   Properties:
+  #     VpcId: !Ref MyVPC
+  #     CidrBlock: 10.0.0.0/24
 
   MyElasticacheSubnetGroup:
     Type: AWS::ElastiCache::SubnetGroup
@@ -95,7 +92,7 @@ Resources:
       Description: Subnet group for ElastiCache
       SubnetIds:
         - subnet-02c217f126c0ce1d5
-        
+
   MyElasticacheRedis:
     Type: 'AWS::ElastiCache::CacheCluster'
     Properties:
@@ -117,4 +114,3 @@ Resources:
           FromPort: 6379
           ToPort: 6379
           CidrIp: 0.0.0.0/0
-
