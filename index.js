@@ -1,8 +1,8 @@
 const Redis = require('redis');
 const {addOrder, getOrder} = require("./services/orderservice.js");
-const {addOrderItem} = require("./services/orderItemservice.js");
+const {addOrderItem} = require("./services/orderItems.js");
 const fs = require("fs");
-const Schema = JSON.parse(fs.readFileSync("./orderItemSchema.json"));
+const Schema = JSON.parse(fs.readFileSync("./services/orderItemSchema.json"));
 const Ajv = require('ajv');
 const ajv = new Ajv();
 
