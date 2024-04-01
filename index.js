@@ -2,7 +2,17 @@ const Redis = require('redis');
 const {addOrder, getOrder} = require("./services/orderservice.js");
 const {addOrderItem} = require("./services/orderItems.js");
 const fs = require("fs");
-const Schema = JSON.parse(fs.readFileSync("./servicesorderItemSchema.json"));
+const Schema = {
+    "type": "object",
+    "properties": {
+      "orderId": { "type": "string" },
+      "productId": { "type": "string" },
+      "quantity": { "type": "integer" },
+      "customerId":{"type": "string"}
+    },
+    "required": [ "customerId", "orderId", "productId", "quantity" ]
+  }
+  //JSON.parse(fs.readFileSync("./servicesorderItemSchema.json"));
 const Ajv = require('ajv');
 const ajv = new Ajv();
 
