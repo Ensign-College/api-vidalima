@@ -7,10 +7,11 @@ const Ajv = require('ajv');
 const ajv = new Ajv();
 
 const redisClient = Redis.createClient({
-    url:`redis://localhost:6379`
+    url:`redis://${process.env.REDIS_HOST}:6379`
 });
 
 exports.boxesHandler = async (event, context) => {
+    redisClient.connect().catch(console.error);
     try {
         const boxes = await redisClient.json.get('boxes', { path: '$' });
         return {
@@ -27,6 +28,7 @@ exports.boxesHandler = async (event, context) => {
 };
 
 exports.ordersHandler = async (event, context) => {
+    redisClient.connect().catch(console.error);
     try {
         const order = JSON.parse(event.body);
         let responseStatus = order.productQuantity
@@ -61,6 +63,7 @@ exports.ordersHandler = async (event, context) => {
 };
 
 exports.orderItemsHandler = async (event, context) => {
+    redisClient.connect().catch(console.error);
     try {
         const validate = ajv.compile(Schema);
         const valid = validate(JSON.parse(event.body));
@@ -87,6 +90,7 @@ exports.orderItemsHandler = async (event, context) => {
 };
 
 exports.ordersByIdHandler = async (event, context) => {
+    redisClient.connect().catch(console.error);
     try {
         const orderId = event.pathParameters.orderId;
         const order = await getOrder({ redisClient, orderId });
