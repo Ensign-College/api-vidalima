@@ -17,7 +17,7 @@ const Ajv = require('ajv');
 const ajv = new Ajv();
 
 const redisClient = Redis.createClient({
-    url:`${process.env.REDIS_HOST}:6379`
+    url:`redis://${process.env.REDIS_HOST}:6379`
 });
 
 exports.boxesHandler = async (event, context) => {
