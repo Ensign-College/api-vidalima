@@ -10,7 +10,7 @@ Resources:
       Runtime: nodejs20.x
       Environment:
         Variables:
-          REDIS_ENDPOINT: !GetAtt MyElasticacheRedis.Attributes.RedisEndpoint.Address
+          REDIS_ENDPOINT: !ImportValue MyElasticacheRedisEndpoint
       Events:
         ApiEvent:
           Type: Api
@@ -26,7 +26,7 @@ Resources:
       Runtime: nodejs20.x
       Environment:
         Variables:
-          REDIS_ENDPOINT: !GetAtt MyElasticacheRedis.Attributes.RedisEndpoint.Address
+          REDIS_ENDPOINT: !ImportValue MyElasticacheRedisEndpoint
       Events:
         OrderItemsApiEvent:
           Type: Api
@@ -42,7 +42,7 @@ Resources:
       Runtime: nodejs20.x
       Environment:
         Variables:
-          REDIS_ENDPOINT: !GetAtt MyElasticacheRedis.Attributes.RedisEndpoint.Address
+          REDIS_ENDPOINT: !ImportValue MyElasticacheRedisEndpoint
       Events:
         OrdersByIdApiEvent:
           Type: Api
@@ -58,7 +58,7 @@ Resources:
       Runtime: nodejs20.x
       Environment:
         Variables:
-          REDIS_ENDPOINT: !GetAtt MyElasticacheRedis.Attributes.RedisEndpoint.Address
+          REDIS_ENDPOINT: !ImportValue MyElasticacheRedisEndpoint
       Events:
         BoxesApiEvent:
           Type: Api
