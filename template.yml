@@ -18,6 +18,7 @@ Resources:
           Properties:
             Path: /orders
             Method: post
+      Role: !Ref VidasLambdaRole
 
   OrderItemsFunction:
     Type: AWS::Serverless::Function
@@ -35,6 +36,7 @@ Resources:
           Properties:
             Path: /orderItems
             Method: post
+      Role: !Ref VidasLambdaRole
 
   OrdersByIdFunction:
     Type: AWS::Serverless::Function
@@ -52,6 +54,7 @@ Resources:
           Properties:
             Path: /orders/{orderId}
             Method: get
+      Role: !Ref VidasLambdaRole
 
   BoxesFunction:
     Type: AWS::Serverless::Function
@@ -69,6 +72,23 @@ Resources:
           Properties:
             Path: /boxes
             Method: get
+      Role: !Ref VidasLambdaRole
+
+  VidaLambdaRole:
+  Type: AWS::IAM::Role
+  Properties:
+    RoleName: VidaLambdaRole
+    AssumeRolePolicyDocument:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
+    ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+
 
   MyElasticacheSubnetGroup:
     Type: AWS::ElastiCache::SubnetGroup
